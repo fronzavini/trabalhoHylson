@@ -1,7 +1,10 @@
 import pytest
 from src.config import *
 from src.service.common_service import *
-from model import Treino, Treinador, Time
+
+from src.model.treinador import Treinador
+from src.model.treino import Treino
+from src.model.time import Time
 
 def test_treino_creation():
     with app.app_context():

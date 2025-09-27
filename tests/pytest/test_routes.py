@@ -1,7 +1,7 @@
 import pytest
 import json
 from src.config import app, db
-from model import *
+from src.model import *
 
 # -------------------------
 # Fixture para o client Flask

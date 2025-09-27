@@ -1,7 +1,7 @@
 import pytest
 from src.config import *
 from src.service.common_service import *
-from src.model import Time
+from src.model.time import Time
 
 def test_time_creation():
     with app.app_context():

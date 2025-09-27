@@ -3,7 +3,8 @@ import pytest
 from src.config import *
 
 from src.service.common_service import *
-from model import *
+from src.model.atleta import Atleta
+from src.app import app
 
 # db.generate_mapping(create_tables=False)
 # -------------------------

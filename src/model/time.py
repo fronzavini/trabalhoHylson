@@ -12,3 +12,4 @@ class Time(db.Entity):
     id = PrimaryKey(int, auto=True)
     esporte = Required(str)  # Ex: "Futebol", "Basquete"
     atletas = Set(Atleta)
+    treinos = Set("Treino") 

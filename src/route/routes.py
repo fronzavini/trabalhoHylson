@@ -1,5 +1,9 @@
 from src.config import *  # arquivo onde estão Atleta, Treinador, Time, Treino e Foto
-from model import *
+from src.model.atleta import *
+from src.model.treino import *
+from src.model.treinador import *
+from src.model.time import *
+from src.model.foto import *
 from src.service.common_service import *
 
 # --- Rota padrão ---

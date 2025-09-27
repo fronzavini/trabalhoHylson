@@ -1,7 +1,8 @@
 import pytest
 from src.config import *
 from src.service.common_service import *
-from src.model import Foto, Atleta
+from src.model.atleta import Atleta
+from src.model.foto import Foto
 
 def test_foto_creation():
     with app.app_context():

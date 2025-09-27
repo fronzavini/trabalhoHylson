@@ -13,6 +13,7 @@ class Treino(db.Entity):
     id = PrimaryKey(int, auto=True)
     data = Required(date)
     horario = Required(str)
-    time = Required(Time) # Time que fará o treino
-    local = Required(str)  # Ex: quadra, pista, gramado
-    treinador = Required(Treinador)
+    time = Required(Time)       # atributo reverso: Time.treinos
+    local = Required(str)       # Ex: quadra, pista, gramado
+    treinador = Required(Treinador)  # atributo reverso: Treinador.treinos
+    atleta = Optional("Atleta")      # se quiser vincular um atleta específico
