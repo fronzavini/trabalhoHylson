@@ -1,6 +1,6 @@
 import pytest
-from config import *
-from common_service import *
+from src.config import *
+from src.service.common_service import *
 from model import Treino, Treinador, Time
 
 def test_treino_creation():

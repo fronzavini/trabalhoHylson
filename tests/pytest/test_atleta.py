@@ -1,8 +1,8 @@
 import pytest
 
-from config import *
+from src.config import *
 
-from common_service import *
+from src.service.common_service import *
 from model import *
 
 # db.generate_mapping(create_tables=False)

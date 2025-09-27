@@ -1,6 +1,6 @@
 import pytest
 import json
-from config import app, db
+from src.config import app, db
 from model import *
 
 # -------------------------
