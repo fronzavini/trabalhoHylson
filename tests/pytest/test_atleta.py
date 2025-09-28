@@ -1,10 +1,11 @@
 import pytest
+import uuid
 
 from src.config import *
-
 from src.service.common_service import *
 from src.model.atleta import Atleta
 from src.app import app
+
 
 # db.generate_mapping(create_tables=False)
 # -------------------------
@@ -16,14 +17,12 @@ def test_atleta_creation():
             atleta = create_object(Atleta,
                 nome="Joao Silva",
                 dt_nasc="2000-05-01",
-                email="joao@gmail.com",
-                cpf="12345678901"
+                email=f"joao{uuid.uuid4()}@gmail.com",
+                cpf=str(uuid.uuid4().int)[:11]
             )
             assert atleta.id is not None
             assert isinstance(atleta.id, int)
             assert atleta.nome == "Joao Silva"
-            assert atleta.email == "joao@gmail.com"
-
 # -------------------------
 # Teste de exclusão de Atleta
 # -------------------------

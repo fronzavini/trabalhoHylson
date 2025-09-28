@@ -42,9 +42,12 @@ def get_objects_helper(mclass):
 # curl -X DELETE localhost:5000/atletas/1
 @app.route('/atletas', methods=['POST'])
 def create_atleta():
-    data = request.json
-    answer = create_simple_object(Atleta, data)
-    return jsonify(answer), 201 if answer["result"] == "ok" else 500
+    try:
+        data = request.get_json()
+        atleta = create_object(Atleta, **data)
+        return jsonify({"result": "ok", "details": serialize_model(atleta)}), 201
+    except Exception as e:
+        return jsonify({"result": "error", "message": str(e)}), 400
 
 
 @app.route('/atletas', methods=['GET'])

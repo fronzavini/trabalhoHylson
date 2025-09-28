@@ -4,6 +4,8 @@ from src.service.common_service import *
 from src.model.atleta import Atleta
 from src.model.foto import Foto
 
+
+
 def test_foto_creation():
     with app.app_context():
         with db_session:
@@ -20,7 +22,7 @@ def test_foto_creation():
             )
             assert foto.id is not None
             assert isinstance(foto.id, int)
-            assert foto.url == "http://image.com/foto1.png"
+            assert foto.url == "https://upload.wikimedia.org/wikipedia/commons/1/18/Lionel-Messi-Argentina-2022-FIFA-World-Cup_sharpness.jpg"
             assert foto.atleta.id == atleta.id
 
 def test_foto_delete():

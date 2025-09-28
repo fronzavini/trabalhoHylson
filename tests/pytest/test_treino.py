@@ -6,6 +6,7 @@ from src.model.treinador import Treinador
 from src.model.treino import Treino
 from src.model.time import Time
 
+
 def test_treino_creation():
     with app.app_context():
         with db_session:

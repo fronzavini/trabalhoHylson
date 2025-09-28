@@ -1,18 +1,21 @@
 import pytest
 import json
+from datetime import date, time
 from src.config import app, db
-from src.model import *
+from src.route.routes import *
 
 
 # -------------------------
+
 # Fixture para o client Flask
 # -------------------------
 @pytest.fixture
 def client():
-    # Configura banco em memória para testes
-    db.drop_all_tables(with_all_data=True)
-    db.create_tables()
+    app.config['TESTING'] = True
     with app.test_client() as client:
+        if not client:
+            db.generate_mapping(create_tables=True)  # <-- Add this line
+            #db.create_tables()
         yield client
 
 # -------------------------
@@ -20,6 +23,7 @@ def client():
 # -------------------------
 def test_atleta_crud(client):
     # POST
+
     res = client.post('/atletas', json={
         "nome": "Joao",
         "dt_nasc": "2000-05-01",

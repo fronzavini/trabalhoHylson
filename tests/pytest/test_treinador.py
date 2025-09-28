@@ -3,6 +3,8 @@ from src.config import *
 from src.service.common_service import *
 from src.model.treinador import Treinador
 
+
+
 def test_treinador_creation():
     with app.app_context():
         with db_session:
