@@ -1,4 +1,4 @@
-from src.config import db
+from config import db
 from pony.orm import Database, Required, PrimaryKey, Optional, LongStr, Set, db_session, commit, rollback, select
 from datetime import date
 from flask import Flask, jsonify, request, abort, render_template, redirect, flash, session, url_for

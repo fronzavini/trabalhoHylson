@@ -1,5 +1,5 @@
-from src.config import *
-from src.route.routes import *
+from config import *
+from route.routes import *
 
 db.generate_mapping(create_tables=False)
 

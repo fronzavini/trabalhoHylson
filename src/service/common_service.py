@@ -1,11 +1,11 @@
-from src.config import *
-from src.model.atleta import *
-from src.model.treinador import *
-from src.model.time import *
-from src.model.treino import *
-from src.model.foto import *
+from config import *
+from model.atleta import *
+from model.treinador import *
+from model.time import *
+from model.treino import *
+from model.foto import *
 from pony.orm import db_session, select
-from src.utils import serialize_model
+from utils import serialize_model
 # --- CREATE ---
 
 @db_session

@@ -1,10 +1,10 @@
-from src.config import *  # arquivo onde estão Atleta, Treinador, Time, Treino e Foto
-from src.model.atleta import *
-from src.model.treino import *
-from src.model.treinador import *
-from src.model.time import *
-from src.model.foto import *
-from src.service.common_service import *
+from config import *  # arquivo onde estão Atleta, Treinador, Time, Treino e Foto
+from model.atleta import *
+from model.treino import *
+from model.treinador import *
+from model.time import *
+from model.foto import *
+from service.common_service import *
 
 # --- Rota padrão ---
 @app.route('/')
