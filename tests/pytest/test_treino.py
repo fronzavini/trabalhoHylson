@@ -2,9 +2,7 @@ import pytest
 from src.config import *
 from src.service.common_service import *
 
-from src.model.treinador import Treinador
-from src.model.treino import Treino
-from src.model.time import Time
+from src.model import Treinador, Time, Treino
 
 def test_treino_creation():
     with app.app_context():

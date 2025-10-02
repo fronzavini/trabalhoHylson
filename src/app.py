@@ -1,6 +1,7 @@
-from src.config import *
-from src.route.routes import *
+from config import *
+from route.routes import *
+from model import *
 
-db.generate_mapping(create_tables=False)
+#db.generate_mapping(create_tables=False)
 
 print('Aplicação iniciada com sucesso')

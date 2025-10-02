@@ -1,16 +1,13 @@
-from src.config import *  # arquivo onde estão Atleta, Treinador, Time, Treino e Foto
-from src.model.atleta import *
-from src.model.treino import *
-from src.model.treinador import *
-from src.model.time import *
-from src.model.foto import *
-from src.service.common_service import *
+from src.config import * 
+from src.model import *
+from service.common_service import *
+from flask import Flask, request, jsonify
+
 
 # --- Rota padrão ---
 @app.route('/')
 def index():
     return "API de Esportes. Use /atletas, /treinadores, /times, /treinos e /fotos"
-
 
 # --- Funções auxiliares ---
 def create_simple_object(mclass, data):

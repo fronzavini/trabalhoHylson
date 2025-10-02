@@ -34,7 +34,7 @@ if MY_DB == "SQLITE":
     # at this folder
     import os
     this_path = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(this_path, 'database.db')
+    file_path = os.path.join(this_path, 'esportes.db')
     db.bind(provider='sqlite', filename=file_path, create_db=True)
 elif MY_DB == "MYSQL":
     db.bind(
