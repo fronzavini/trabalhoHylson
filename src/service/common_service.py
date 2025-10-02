@@ -1,7 +1,7 @@
-from config import *
-from model import *
+from src.config import *
+from src.model import *
 from pony.orm import db_session, select
-from utils import serialize_model
+from src.utils import serialize_model
 # --- CREATE ---
 
 @db_session
@@ -58,15 +58,13 @@ def get_treinador_by_name(value):
 # --- DELETE ---
 
 @db_session
-def delete_object_by_id(m_class, object_id):
-    try:
-        obj = m_class.get(id=object_id)
+def delete_object_by_id(model, obj_id):
+    with db_session:
+        obj = model.get(id=obj_id)
         if obj:
             obj.delete()
-            return "ok"
-        return f"{m_class.__name__} with id {object_id} not found"
-    except Exception as ex:
-        return str(ex)
+            return {"result": "ok"}
+        return {"result": "error", "message": f"{model.__name__} not found"}
 
 
 @db_session

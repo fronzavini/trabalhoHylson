@@ -1,6 +1,6 @@
-from config import *
-from route.routes import *
-from model import *
+from src.config import *
+from src.route.routes import *
+from src.model import *
 
 #db.generate_mapping(create_tables=False)
 
