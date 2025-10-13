@@ -6,7 +6,7 @@ import CriarAtleta from "../components/criarAtleta";
 import Menu from "../components/menu";
 import styles from "../styles/pagina.module.css";
 
-export default function AtletasPage() {
+export default function TreinadoresPage() {
   const [showPopup, setShowPopup] = useState(false);
   return (
     <div>
@@ -14,7 +14,7 @@ export default function AtletasPage() {
 
       <div className={styles.container}>
         <BotaoGenerico
-          texto="Adicionar Atleta"
+          texto="Adicionar Treinador"
           icone={faUserPlus}
           onClick={() => setShowPopup(true)}
         />

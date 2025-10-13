@@ -14,7 +14,7 @@ export default function AtletasPage() {
 
       <div className={styles.container}>
         <BotaoGenerico
-          texto="Adicionar Atleta"
+          texto="Adicionar Treino"
           icone={faUserPlus}
           onClick={() => setShowPopup(true)}
         />

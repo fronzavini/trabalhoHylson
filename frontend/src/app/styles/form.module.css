@@ -71,3 +71,23 @@
     font-size: 0.95rem;
   }
 }
+
+.formWrapper {
+  position: relative; /* para posicionar o botão fechar */
+}
+
+.closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: #008f68;
+}
