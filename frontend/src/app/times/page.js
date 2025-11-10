@@ -2,9 +2,10 @@
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import BotaoGenerico from "../components/botao";
-import CriarAtleta from "../components/criarAtleta";
 import Menu from "../components/menu";
 import styles from "../styles/pagina.module.css";
+import TabelaTimes from "../components/listar_time";
+import CriarTime from "../components/criarTime";
 
 export default function TimesPage() {
   const [showPopup, setShowPopup] = useState(false);
@@ -22,11 +23,13 @@ export default function TimesPage() {
         {showPopup && (
           <div className={styles.popupOverlay}>
             <div className={styles.popupContent}>
-              <CriarAtleta onClose={() => setShowPopup(false)} />
+              <CriarTime onClose={() => setShowPopup(false)} />
             </div>
           </div>
         )}
       </div>
+
+      <TabelaTimes />
     </div>
   );
 }

@@ -3,11 +3,11 @@ from src.model import *
 from service.common_service import *
 from flask import Flask, request, jsonify
 
-
 # --- Rota padrão ---
 @app.route('/')
 def index():
     return "API de Esportes. Use /atletas, /treinadores, /times, /treinos e /fotos"
+
 
 # --- Funções auxiliares ---
 def create_simple_object(mclass, data):
@@ -23,9 +23,21 @@ def create_simple_object(mclass, data):
 
 def get_objects_helper(mclass):
     try:
-        myjson = {"result": "ok"}
-        objs_json = get_objects_json(mclass)
-        myjson.update({"details": objs_json})
+        myjson = {"result": "ok"}   
+        objs = get_objects_json(mclass)
+        serialized = []
+
+        for obj in objs:
+            obj_dict = dict(obj)  # converte objeto para dict simples
+
+            # Se for Atleta, adiciona os times e a foto
+            if isinstance(obj, Atleta):
+                obj_dict["times"] = [{"id": t.id, "nome": t.nome, "esporte": t.esporte} for t in obj.times]
+                obj_dict["ft_perfil"] = obj.ft_perfil.id if obj.ft_perfil else None
+
+            serialized.append(obj_dict)
+
+        myjson.update({"details": serialized})
         return myjson
     except Exception as ex:
         print(f"Erro ao listar {mclass.__name__}: {ex}")
@@ -33,15 +45,35 @@ def get_objects_helper(mclass):
 
 
 # --- CRUD Atleta ---
-
-# curl -X POST -H "Content-Type: application/json" -d '{"nome":"Joao", "dt_nasc":"2000-05-01", "email":"joao@gmail.com", "cpf":"12345678901"}' localhost:5000/atletas
-# curl -X GET localhost:5000/atletas
-# curl -X DELETE localhost:5000/atletas/1
 @app.route('/atletas', methods=['POST'])
 def create_atleta():
     data = request.json
-    answer = create_simple_object(Atleta, data)
-    return jsonify(answer), 201 if answer["result"] == "ok" else 500
+    try:
+        with db_session:
+            atleta = Atleta(
+                nome=data["nome"],
+                dt_nasc=data["dt_nasc"],
+                email=data["email"],
+                cpf=data["cpf"],
+            )
+
+            # Foto opcional
+            if "foto_url" in data and data["foto_url"]:
+                Foto(url=data["foto_url"], atleta=atleta)
+
+            # Relaciona o atleta aos times (lista de IDs)
+            if "times_ids" in data and isinstance(data["times_ids"], list):
+                for tid in data["times_ids"]:
+                    time = Time.get(id=tid)
+                    if time:
+                        atleta.times.add(time)
+
+            commit()
+            return jsonify({"result": "ok", "id": atleta.id}), 201
+
+    except Exception as e:
+        print("Erro ao criar Atleta:", e)
+        return jsonify({"result": "error", "details": str(e)}), 500
 
 
 @app.route('/atletas', methods=['GET'])
@@ -57,10 +89,6 @@ def delete_atleta(obj_id):
 
 
 # --- CRUD Treinador ---
-
-# curl -X POST -H "Content-Type: application/json" -d '{"nome":"Carlos", "dt_nasc":"1980-01-01", "email":"carlos@gmail.com", "cpf":"98765432100", "cref":"CREF123"}' localhost:5000/treinadores
-# curl -X GET localhost:5000/treinadores
-# curl -X DELETE localhost:5000/treinadores/1   
 @app.route('/treinadores', methods=['POST'])
 def create_treinador():
     data = request.json
@@ -81,22 +109,16 @@ def delete_treinador(obj_id):
 
 
 # --- CRUD Time ---
-
-# curl -X POST -H "Content-Type: application/json" -d '{"esporte":"Futebol"}' localhost:5000/times
-# curl -X GET localhost:5000/times
-# curl -X DELETE localhost:5000/times/1
 @app.route('/times', methods=['POST'])
 def create_time():
     data = request.json
     answer = create_simple_object(Time, data)
     return jsonify(answer), 201 if answer["result"] == "ok" else 500
 
-
 @app.route('/times', methods=['GET'])
 def list_times():
     myjson = get_objects_helper(Time)
     return jsonify(myjson), 200 if myjson["result"] == "ok" else 500
-
 
 @app.route('/times/<int:obj_id>', methods=['DELETE'])
 def delete_time(obj_id):
@@ -105,22 +127,16 @@ def delete_time(obj_id):
 
 
 # --- CRUD Treino ---
-
-# curl -X POST -H "Content-Type: application/json" -d '{"data":"2025-09-27", "horario":"10:00", "time":1, "local":"Quadra Central", "treinador":1}' localhost:5000/treinos
-# curl -X GET localhost:5000/treinos
-# curl -X DELETE localhost:5000/treinos/1
 @app.route('/treinos', methods=['POST'])
 def create_treino():
     data = request.json
     answer = create_simple_object(Treino, data)
     return jsonify(answer), 201 if answer["result"] == "ok" else 500
 
-
 @app.route('/treinos', methods=['GET'])
 def list_treinos():
     myjson = get_objects_helper(Treino)
     return jsonify(myjson), 200 if myjson["result"] == "ok" else 500
-
 
 @app.route('/treinos/<int:obj_id>', methods=['DELETE'])
 def delete_treino(obj_id):
@@ -129,22 +145,16 @@ def delete_treino(obj_id):
 
 
 # --- CRUD Foto ---
-
-# curl -X POST -H "Content-Type: application/json" -d '{"url":"http://image.com/foto1.png", "atleta":1}' localhost:5000/fotos
-# curl -X GET localhost:5000/fotos
-# curl -X DELETE localhost:5000/fotos/1
 @app.route('/fotos', methods=['POST'])
 def create_foto():
     data = request.json
     answer = create_simple_object(Foto, data)
     return jsonify(answer), 201 if answer["result"] == "ok" else 500
 
-
 @app.route('/fotos', methods=['GET'])
 def list_fotos():
     myjson = get_objects_helper(Foto)
     return jsonify(myjson), 200 if myjson["result"] == "ok" else 500
-
 
 @app.route('/fotos/<int:obj_id>', methods=['DELETE'])
 def delete_foto(obj_id):

@@ -5,6 +5,7 @@ import BotaoGenerico from "../components/botao";
 import CriarAtleta from "../components/criarAtleta";
 import Menu from "../components/menu";
 import styles from "../styles/pagina.module.css";
+import ListarAtletas from "../components/listar_atleta";
 
 export default function AtletasPage() {
   const [showPopup, setShowPopup] = useState(false);
@@ -26,6 +27,8 @@ export default function AtletasPage() {
             </div>
           </div>
         )}
+
+        <ListarAtletas />
       </div>
     </div>
   );
