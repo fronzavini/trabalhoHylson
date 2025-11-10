@@ -33,7 +33,22 @@ def get_objects(m_class):
 @db_session
 def get_objects_json(m_class):
     objs = list(m_class.select())
-    return [o.to_dict() for o in objs]
+    serialized = []
+
+    for o in objs:
+        data = o.to_dict()
+
+        # Caso seja um atleta, adiciona as relações
+        if isinstance(o, Atleta):
+            data["times"] = [
+                {"id": t.id, "esporte": t.esporte} for t in o.times
+            ]
+            data["ft_perfil"] = o.ft_perfil.id if o.ft_perfil else None
+
+        serialized.append(data)
+
+    return serialized
+
 
 
 @db_session

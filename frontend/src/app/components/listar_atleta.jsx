@@ -4,11 +4,11 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-
 import styles from "../styles/tabela.module.css";
 
 export default function TabelaAtletas() {
   const [atletas, setAtletas] = useState([]);
+  const [times, setTimes] = useState([]);
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
@@ -19,15 +19,18 @@ export default function TabelaAtletas() {
     return `${day}/${month}/${year}`;
   };
 
+  // 🔹 Carrega atletas, fotos e times
   const carregarAtletas = async () => {
     try {
-      const [resAtletas, resFotos] = await Promise.all([
+      const [resAtletas, resFotos, resTimes] = await Promise.all([
         fetch("http://localhost:5000/atletas"),
         fetch("http://localhost:5000/fotos"),
+        fetch("http://localhost:5000/times"),
       ]);
 
       const dataAtletas = await resAtletas.json();
       const dataFotos = await resFotos.json();
+      const dataTimes = await resTimes.json();
 
       if (
         !dataAtletas ||
@@ -41,20 +44,37 @@ export default function TabelaAtletas() {
         return;
       }
 
+      // Mapa de fotos
       const fotosMap = {};
       if (dataFotos.result === "ok" && Array.isArray(dataFotos.details)) {
         dataFotos.details.forEach((f) => (fotosMap[f.id] = f));
       }
 
-      const formatados = dataAtletas.details.map((a) => ({
-        id: a.id,
-        nome: a.nome,
-        dt_nasc: formatDate(a.dt_nasc),
-        email: a.email,
-        cpf: a.cpf,
-        ft_perfil: a.ft_perfil ? fotosMap[a.ft_perfil] : null,
-        times: a.times || [],
-      }));
+      // Mapa de times
+      const timesMap = {};
+      if (dataTimes.result === "ok" && Array.isArray(dataTimes.details)) {
+        dataTimes.details.forEach((t) => (timesMap[t.id] = t));
+        setTimes(dataTimes.details);
+      }
+
+      // Formata atletas
+      const formatados = dataAtletas.details.map((a) => {
+        const atletaTimes = (a.times_ids || a.times || []).map((tid) => {
+          // dependendo do backend, pode vir como id ou objeto
+          if (typeof tid === "object") return tid;
+          return timesMap[tid] || { id: tid, nome: "Desconhecido" };
+        });
+
+        return {
+          id: a.id,
+          nome: a.nome,
+          dt_nasc: formatDate(a.dt_nasc),
+          email: a.email,
+          cpf: a.cpf,
+          ft_perfil: a.ft_perfil ? fotosMap[a.ft_perfil] : null,
+          times: atletaTimes,
+        };
+      });
 
       setAtletas(formatados);
     } catch (err) {
