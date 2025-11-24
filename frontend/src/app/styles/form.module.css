@@ -1,0 +1,93 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.input,
+.select {
+  margin-top: 5px;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.input:focus,
+.select:focus {
+  border-color: #008f68;
+  outline: none;
+}
+
+.botao {
+  margin-top: 1rem;
+  background-color: #008f68;
+  color: white;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.botao:hover {
+  background-color: #007356;
+}
+
+@media (max-width: 600px) {
+  .form {
+    padding: 1.5rem;
+    width: 90%;
+  }
+
+  .label {
+    font-size: 0.9rem;
+  }
+
+  .input,
+  .select {
+    font-size: 0.9rem;
+  }
+
+  .botao {
+    font-size: 0.95rem;
+  }
+}
+
+.formWrapper {
+  position: relative; /* para posicionar o botão fechar */
+}
+
+.closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: #008f68;
+}

@@ -1,0 +1,54 @@
+.nav {
+  background-color: #f7f7f7; /* mesma cor do form */
+  padding: 1.5rem 2rem;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  max-width: 95%; /* ocupa quase toda a largura da tela */
+  margin: 2rem auto;
+  transition: box-shadow 0.3s;
+}
+
+.menu {
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap; /* para que os itens se ajustem em telas menores */
+}
+
+.item a {
+  text-decoration: none;
+  color: #008f68; /* cor do botão */
+  font-weight: 500;
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.item a:hover {
+  background-color: #008f68;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 143, 104, 0.3);
+}
+
+/* Item ativo */
+.item a.active {
+  background-color: #008f68;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 143, 104, 0.3);
+}
+
+@media (max-width: 600px) {
+  .menu {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .nav {
+    padding: 1rem;
+    width: 95%;
+  }
+}
