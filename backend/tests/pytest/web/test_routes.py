@@ -1,167 +1,257 @@
 import pytest
+import json
 from src.config import app, db
-from src.route.routes import *
+from src.model import *
 
-# --- Gera mapeamento Pony ORM uma única vez ---
-db.generate_mapping(create_tables=True)
-
-# --- Fixture para o client Flask ---
+# -------------------------
+# Fixture para o client Flask
+# -------------------------
 @pytest.fixture
 def client():
-    app.config['TESTING'] = True
+    # Configura banco em memória para testes
+    db.drop_all_tables(with_all_data=True)
+    db.create_tables()
     with app.test_client() as client:
         yield client
 
-# --- Fixtures para criar dependências ---
-
-@pytest.fixture
-def atleta(client):
-    res = client.post('/atletas', json={
+# -------------------------
+# Testes Atleta
+# -------------------------
+def test_create_atleta(client):
+    data = {
         "nome": "Joao",
         "dt_nasc": "2000-05-01",
         "email": "joao@gmail.com",
         "cpf": "12345678901"
-    })
-    atleta_id = list(res.get_json()["details"]["Atleta"].keys())[0]
-    yield atleta_id
-    client.delete(f"/atletas/{atleta_id}")
+    }
+    response = client.post("/atletas", data=json.dumps(data), content_type='application/json')
+    assert response.status_code == 201
+    resp_json = response.get_json()
+    assert resp_json["result"] == "ok"
+    
+    # Verifique a estrutura do dicionário antes de acessar
+    atleta_details = resp_json["details"]["Atleta"]
+    assert len(atleta_details) > 0  # Certifique-se de que há pelo menos um item
+    atleta_id = list(atleta_details.keys())[0]  # Pegue o primeiro ID
+    assert atleta_details[atleta_id]["nome"] == "Joao"
 
-@pytest.fixture
-def treinador(client):
-    res = client.post('/treinadores', json={
+def test_list_atletas(client):
+    # Criar um atleta antes
+    data = {
+        "nome": "Maria",
+        "dt_nasc": "1999-03-15",
+        "email": "maria@gmail.com",
+        "cpf": "98765432100"
+    }
+    client.post("/atletas", data=json.dumps(data), content_type='application/json')
+
+    response = client.get("/atletas")
+    assert response.status_code == 200
+    resp_json = response.get_json()
+    assert resp_json["result"] == "ok"
+    assert len(resp_json["details"]) == 1
+
+def test_delete_atleta(client):
+    data = {
+        "nome": "Pedro",
+        "dt_nasc": "1998-08-08",
+        "email": "pedro@gmail.com",
+        "cpf": "11122233344"
+    }
+    client.post("/atletas", data=json.dumps(data), content_type='application/json')
+
+    response = client.delete("/atletas/1")
+    assert response.status_code == 204
+
+# -------------------------
+# Testes Treinador
+# -------------------------
+def test_create_treinador(client):
+    data = {
         "nome": "Carlos",
         "dt_nasc": "1980-01-01",
         "email": "carlos@gmail.com",
         "cpf": "98765432100",
         "cref": "CREF123"
-    })
-    treinador_id = list(res.get_json()["details"]["Treinador"].keys())[0]
-    yield treinador_id
-    client.delete(f"/treinadores/{treinador_id}")
+    }
+    response = client.post("/treinadores", data=json.dumps(data), content_type='application/json')
+    assert response.status_code == 201
+    resp_json = response.get_json()
+    assert resp_json["result"] == "ok"
 
-@pytest.fixture
-def time(client):
-    res = client.post('/times', json={"esporte": "Futebol"})
-    time_id = list(res.get_json()["details"]["Time"].keys())[0]
-    yield time_id
-    client.delete(f"/times/{time_id}")
+def test_list_treinadores(client):
+    data = {
+        "nome": "Ana",
+        "dt_nasc": "1975-07-20",
+        "email": "ana@gmail.com",
+        "cpf": "12312312300",
+        "cref": "CREF456"
+    }
+    client.post("/treinadores", data=json.dumps(data), content_type='application/json')
 
-@pytest.fixture
-def treino(client, time, treinador):
-    res = client.post('/treinos', json={
+    response = client.get("/treinadores")
+    assert response.status_code == 200
+    resp_json = response.get_json()
+    assert resp_json["result"] == "ok"
+    assert len(resp_json["details"]) == 1
+
+def test_delete_treinador(client):
+    data = {
+        "nome": "Luiz",
+        "dt_nasc": "1970-02-10",
+        "email": "luiz@gmail.com",
+        "cpf": "32132132100",
+        "cref": "CREF789"
+    }
+    client.post("/treinadores", data=json.dumps(data), content_type='application/json')
+
+    response = client.delete("/treinadores/1")
+    assert response.status_code == 204
+
+# -------------------------
+# Testes Time
+# -------------------------
+def test_create_time(client):
+    data = {"esporte": "Futebol"}
+    response = client.post("/times", data=json.dumps(data), content_type='application/json')
+    assert response.status_code == 201
+
+def test_list_times(client):
+    data = {"esporte": "Basquete"}
+    client.post("/times", data=json.dumps(data), content_type='application/json')
+
+    response = client.get("/times")
+    assert response.status_code == 200
+    resp_json = response.get_json()
+    assert resp_json["result"] == "ok"
+
+def test_delete_time(client):
+    data = {"esporte": "Vôlei"}
+    client.post("/times", data=json.dumps(data), content_type='application/json')
+
+    response = client.delete("/times/1")
+    assert response.status_code == 204
+
+# -------------------------
+# Testes Treino
+# -------------------------
+def test_create_treino(client):
+    # Primeiro criar treinador e time
+    client.post("/treinadores", data=json.dumps({
+        "nome": "Carlos",
+        "dt_nasc": "1980-01-01",
+        "email": "carlos@gmail.com",
+        "cpf": "98765432100",
+        "cref": "CREF123"
+    }), content_type='application/json')
+
+    client.post("/times", data=json.dumps({"esporte": "Futebol"}), content_type='application/json')
+
+    data = {
         "data": "2025-09-27",
         "horario": "10:00",
-        "time": int(time),
+        "time": 1,
         "local": "Quadra Central",
-        "treinador": int(treinador)
-    })
-    treino_id = list(res.get_json()["details"]["Treino"].keys())[0]
-    yield treino_id
-    client.delete(f"/treinos/{treino_id}")
+        "treinador": 1
+    }
+    response = client.post("/treinos", data=json.dumps(data), content_type='application/json')
+    assert response.status_code == 201
 
-@pytest.fixture
-def foto(client, atleta):
-    res = client.post('/fotos', json={
-        "url": "http://image.com/foto1.png",
-        "atleta": int(atleta)
-    })
-    foto_id = list(res.get_json()["details"]["Foto"].keys())[0]
-    yield foto_id
-    client.delete(f"/fotos/{foto_id}")
-
-# --- Testes CRUD ---
-
-def test_crud_atleta(client):
-    # POST
-    res = client.post('/atletas', json={
+def test_list_treinos(client):
+    # Criar treinador e time
+    client.post("/treinadores", data=json.dumps({
         "nome": "Ana",
-        "dt_nasc": "1995-03-10",
-        "email": "ana@gmail.com",
-        "cpf": "11122233344"
-    })
-    assert res.status_code == 201
-    atleta_id = list(res.get_json()["details"]["Atleta"].keys())[0]
-
-    # GET
-    res = client.get('/atletas')
-    assert res.status_code == 200
-    assert any(atleta_id in item for item in str(res.get_json()["details"]))
-
-    # DELETE
-    res = client.delete(f"/atletas/{atleta_id}")
-    assert res.status_code == 204
-
-def test_crud_treinador(client):
-    # POST
-    res = client.post('/treinadores', json={
-        "nome": "Miguel",
         "dt_nasc": "1975-07-20",
-        "email": "miguel@gmail.com",
-        "cpf": "55566677788",
-        "cref": "CREF999"
-    })
-    assert res.status_code == 201
-    treinador_id = list(res.get_json()["details"]["Treinador"].keys())[0]
+        "email": "ana@gmail.com",
+        "cpf": "12312312300",
+        "cref": "CREF456"
+    }), content_type='application/json')
+    client.post("/times", data=json.dumps({"esporte": "Basquete"}), content_type='application/json')
 
-    # GET
-    res = client.get('/treinadores')
-    assert res.status_code == 200
-    assert any(treinador_id in item for item in str(res.get_json()["details"]))
-
-    # DELETE
-    res = client.delete(f"/treinadores/{treinador_id}")
-    assert res.status_code == 204
-
-def test_crud_time(client):
-    # POST
-    res = client.post('/times', json={"esporte": "Vôlei"})
-    assert res.status_code == 201
-    time_id = list(res.get_json()["details"]["Time"].keys())[0]
-
-    # GET
-    res = client.get('/times')
-    assert res.status_code == 200
-    assert any(time_id in item for item in str(res.get_json()["details"]))
-
-    # DELETE
-    res = client.delete(f"/times/{time_id}")
-    assert res.status_code == 204
-
-def test_crud_treino(client, time, treinador):
-    # POST
-    res = client.post('/treinos', json={
-        "data": "2025-09-28",
+    data = {
+        "data": "2025-09-27",
         "horario": "15:00",
-        "time": int(time),
-        "local": "Quadra Leste",
-        "treinador": int(treinador)
-    })
-    assert res.status_code == 201
-    treino_id = list(res.get_json()["details"]["Treino"].keys())[0]
+        "time": 1,
+        "local": "Quadra B",
+        "treinador": 1
+    }
+    client.post("/treinos", data=json.dumps(data), content_type='application/json')
 
-    # GET
-    res = client.get('/treinos')
-    assert res.status_code == 200
-    assert any(treino_id in item for item in str(res.get_json()["details"]))
+    response = client.get("/treinos")
+    assert response.status_code == 200
+    resp_json = response.get_json()
+    assert resp_json["result"] == "ok"
 
-    # DELETE
-    res = client.delete(f"/treinos/{treino_id}")
-    assert res.status_code == 204
+def test_delete_treino(client):
+    client.post("/treinadores", data=json.dumps({
+        "nome": "Luiz",
+        "dt_nasc": "1970-02-10",
+        "email": "luiz@gmail.com",
+        "cpf": "32132132100",
+        "cref": "CREF789"
+    }), content_type='application/json')
+    client.post("/times", data=json.dumps({"esporte": "Vôlei"}), content_type='application/json')
 
-def test_crud_foto(client, atleta):
-    # POST
-    res = client.post('/fotos', json={
+    client.post("/treinos", data=json.dumps({
+        "data": "2025-09-27",
+        "horario": "08:00",
+        "time": 1,
+        "local": "Quadra C",
+        "treinador": 1
+    }), content_type='application/json')
+
+    response = client.delete("/treinos/1")
+    assert response.status_code == 204
+
+# -------------------------
+# Testes Foto
+# -------------------------
+def test_create_foto(client):
+    # Criar atleta
+    client.post("/atletas", data=json.dumps({
+        "nome": "Joao",
+        "dt_nasc": "2000-05-01",
+        "email": "joao@gmail.com",
+        "cpf": "12345678901"
+    }), content_type='application/json')
+
+    data = {
+        "url": "http://image.com/foto1.png",
+        "atleta": 1
+    }
+    response = client.post("/fotos", data=json.dumps(data), content_type='application/json')
+    assert response.status_code == 201
+
+def test_list_fotos(client):
+    client.post("/atletas", data=json.dumps({
+        "nome": "Maria",
+        "dt_nasc": "1999-03-15",
+        "email": "maria@gmail.com",
+        "cpf": "98765432100"
+    }), content_type='application/json')
+
+    client.post("/fotos", data=json.dumps({
         "url": "http://image.com/foto2.png",
-        "atleta": int(atleta)
-    })
-    assert res.status_code == 201
-    foto_id = list(res.get_json()["details"]["Foto"].keys())[0]
+        "atleta": 1
+    }), content_type='application/json')
 
-    # GET
-    res = client.get('/fotos')
-    assert res.status_code == 200
-    assert any(foto_id in item for item in str(res.get_json()["details"]))
+    response = client.get("/fotos")
+    assert response.status_code == 200
+    resp_json = response.get_json()
+    assert resp_json["result"] == "ok"
 
-    # DELETE
-    res = client.delete(f"/fotos/{foto_id}")
-    assert res.status_code == 204
+def test_delete_foto(client):
+    client.post("/atletas", data=json.dumps({
+        "nome": "Pedro",
+        "dt_nasc": "1998-08-08",
+        "email": "pedro@gmail.com",
+        "cpf": "11122233344"
+    }), content_type='application/json')
+
+    client.post("/fotos", data=json.dumps({
+        "url": "http://image.com/foto3.png",
+        "atleta": 1
+    }), content_type='application/json')
+
+    response = client.delete("/fotos/1")
+    assert response.status_code == 204

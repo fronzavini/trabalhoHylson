@@ -1,6 +1,10 @@
 from src.config import *
 from src.model import *
+<<<<<<< HEAD:backend/src/service/common_service.py
 from pony.orm import db_session, select#, query
+=======
+from pony.orm import db_session, select
+>>>>>>> 08fd2efc0ade51fc8b0c7ecfdd1253f95de9ac28:src/service/common_service.py
 from src.utils import serialize_model
 # --- CREATE ---
 

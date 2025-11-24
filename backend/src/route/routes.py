@@ -1,6 +1,6 @@
 from src.config import * 
 from src.model import *
-from service.common_service import *
+from src.service.common_service import *
 from flask import Flask, request, jsonify
 
 # --- Rota padrão ---
