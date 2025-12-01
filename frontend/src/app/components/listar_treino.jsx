@@ -12,7 +12,7 @@ export default function ListarTreino() {
 
   const carregarTreinos = async () => {
     try {
-      const res = await fetch("http://localhost:5000/treinos");
+      const res = await fetch("http://www.pythonanywhere.com/treinos");
       const data = await res.json();
 
       if (!data || data.result !== "ok" || !Array.isArray(data.details)) {
@@ -61,8 +61,8 @@ export default function ListarTreino() {
           )
             return;
           try {
-            const res = await fetch(
-              `http://localhost:5000/treinos/${rowData.id}`,
+            const res = await fetch( 
+              'http://www.pythonanywhere.com/treinos/${rowData.id}',
               {
                 method: "DELETE",
               }

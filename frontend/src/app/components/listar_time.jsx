@@ -12,7 +12,7 @@ export default function TabelaTimes() {
 
   const carregarTimes = async () => {
     try {
-      const res = await fetch("http://localhost:5000/times");
+      const res = await fetch("http://www.pythonanywhere.com/times");
       const data = await res.json();
 
       if (!data || data.result !== "ok" || !Array.isArray(data.details)) {
@@ -41,8 +41,7 @@ export default function TabelaTimes() {
           if (!confirm(`Deseja realmente deletar o time "${rowData.esporte}"?`))
             return;
           try {
-            const res = await fetch(
-              `http://localhost:5000/times/${rowData.id}`,
+            const res = await fetch( 'http://www.pythonanywhere.com/times/${rowData.id',
               {
                 method: "DELETE",
               }

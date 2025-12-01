@@ -21,8 +21,7 @@ export default function CriarTreinador({ onClose }) {
     e.preventDefault();
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/treinadores",
+      const res = await axios.post( "http://www.pythonanywhere.com/treinadores",
         formData,
         {
           headers: { "Content-Type": "application/json" },

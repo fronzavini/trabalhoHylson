@@ -20,8 +20,8 @@ export default function CriarTreino({ onClose }) {
     async function carregarDados() {
       try {
         const [resTimes, resTreinadores] = await Promise.all([
-          axios.get("http://localhost:5000/times"),
-          axios.get("http://localhost:5000/treinadores"),
+          axios.get( "http://www.pythonanywhere.com/times"),
+          axios.get( "http://www.pythonanywhere.com/treinadores"),
         ]);
 
         if (resTimes.data.result === "ok") setTimes(resTimes.data.details);
@@ -53,8 +53,7 @@ export default function CriarTreino({ onClose }) {
         treinador: parseInt(formData.treinador_id),
       };
 
-      const res = await axios.post(
-        "http://localhost:5000/treinos",
+      const res = await axios.post( "http://www.pythonanywhere.com/treinos",
         dataToSend,
         {
           headers: { "Content-Type": "application/json" },

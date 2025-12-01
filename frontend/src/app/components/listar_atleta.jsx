@@ -23,9 +23,9 @@ export default function TabelaAtletas() {
   const carregarAtletas = async () => {
     try {
       const [resAtletas, resFotos, resTimes] = await Promise.all([
-        fetch("http://localhost:5000/atletas"),
-        fetch("http://localhost:5000/fotos"),
-        fetch("http://localhost:5000/times"),
+        fetch("http://www.pythonanywhere.com/atletas"),
+        fetch("http://www.pythonanywhere.com/fotos"),
+        fetch("http://www.pythonanywhere.com/times"),
       ]);
 
       const dataAtletas = await resAtletas.json();
@@ -118,8 +118,7 @@ export default function TabelaAtletas() {
           if (!confirm(`Deseja realmente deletar o atleta "${rowData.nome}"?`))
             return;
           try {
-            const res = await fetch(
-              `http://localhost:5000/atletas/${rowData.id}`,
+            const res = await fetch( 'http://www.pythonanywhere.com/atletas/${rowData.id}`,
               { method: "DELETE" }
             );
             if (!res.ok) throw new Error("Erro ao deletar atleta");

@@ -21,7 +21,7 @@ export default function TabelaTreinadores() {
 
   const carregarTreinadores = async () => {
     try {
-      const res = await fetch("http://localhost:5000/treinadores");
+      const res = await fetch("http://www.pythonanywhere.com/treinadores");
       const data = await res.json();
 
       if (!data || data.result !== "ok" || !Array.isArray(data.details)) {
@@ -57,8 +57,7 @@ export default function TabelaTreinadores() {
           )
             return;
           try {
-            const res = await fetch(
-              `http://localhost:5000/treinadores/${rowData.id}`,
+            const res = await fetch( 'http://www.pythonanywhere.com/treinadores/${rowData.id}`,
               {
                 method: "DELETE",
               }

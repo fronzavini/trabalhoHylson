@@ -15,7 +15,7 @@ export default function CriarTime({ onClose }) {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:5000/times", formData, {
+      const res = await axios.post("http://www.pythonanywhere.com/times", formData, {
         headers: { "Content-Type": "application/json" },
       });
 

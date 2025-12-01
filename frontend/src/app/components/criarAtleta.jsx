@@ -39,7 +39,7 @@ export default function CriarAtleta({ onClose, atletaEditando }) {
   //  Carrega times disponíveis
   useEffect(() => {
     axios
-      .get("http://localhost:5000/times")
+      .get( "http://www.pythonanywhere.com/times")
       .then((res) => {
         if (res.data.result === "ok" && Array.isArray(res.data.details)) {
           setTimes(res.data.details);
@@ -85,8 +85,8 @@ export default function CriarAtleta({ onClose, atletaEditando }) {
 
     try {
       const url = atletaEditando
-        ? `http://localhost:5000/atletas/${atletaEditando.id}`
-        : "http://localhost:5000/atletas";
+        ? `http://www.pythonanywhere.com/atletas/${atletaEditando.id}`
+        : "http://www.pythonanywhere.com/atletas";
 
       const metodo = atletaEditando ? "put" : "post";
 
